@@ -1,0 +1,9 @@
+{
+  "name": "walkers-wood",
+  "version": "1.0.0",
+  "description": "Walkers Wood — Premium Hardwood Firewood, Worcestershire",
+  "private": true,
+  "dependencies": {
+    "stripe": "^14.0.0"
+  }
+}
