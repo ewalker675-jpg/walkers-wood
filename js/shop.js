@@ -10,6 +10,10 @@
   // ========== ED: ADD FULLY BOOKED DATES HERE ==========
   const BLOCKED_DATES = [
     // 'YYYY-MM-DD',
+     '2026-06-05',
+     '2026-06-06',
+     '2026-06-07',
+     '2026-06-08',
   ];
 
   // ========== STRIPE CONFIG ==========
