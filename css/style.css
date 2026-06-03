@@ -120,11 +120,12 @@ button { font-family: var(--font); }
   display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.2fr;
   gap: 3rem; margin-bottom: 3rem;
 }
+.footer-grid > div:first-child { overflow: hidden; }
 .footer-logo { height: 50px; width: auto; margin-bottom: 1.2rem; }
 .footer-logo img { height: 100%; width: auto; }
 .footer-desc { font-size: 0.78rem; color: var(--c7); line-height: 1.7; margin-bottom: 1rem; }
 .footer-badges { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
-.footer-badges img { height: 40px; width: auto; }
+.footer-badges img { height: 55px; width: auto; }
 .footer-heading {
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--c7); margin-bottom: 1.2rem;
@@ -146,7 +147,8 @@ button { font-family: var(--font); }
   transition: var(--ease);
 }
 .footer-socials a:hover { border-color: var(--c6); background: rgba(91,102,0,0.2); }
-.footer-socials svg { width: 16px; height: 16px; fill: var(--c7); }
+.footer-socials svg { width: 16px; height: 16px; stroke: var(--c7); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.footer-socials a:hover svg { stroke: var(--white); }
 .footer-bottom {
   border-top: 1px solid rgba(255,255,255,0.08);
   padding-top: 1.5rem; display: flex; align-items: center;
