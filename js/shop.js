@@ -18,7 +18,7 @@
 
   // ========== STRIPE CONFIG ==========
   // Replace with your live publishable key when ready
-  const STRIPE_PK = 'pk_test_REPLACE_WITH_YOUR_KEY';
+  const STRIPE_PK = 'pk_live_51TdqJX2UUw1giO878rJUxh6VtZcgsIOjwdEHdno7fyfpCUwOZrgTgraYcnvS7C20yxngn0h3OwB2m3uNY3sg70ec004hVAakK6';
 
   // ── CONSTANTS ──
   const BASE_POSTCODE = 'WR66DT';
