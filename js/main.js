@@ -75,7 +75,7 @@
     <div class="wrap">
       <div class="footer-grid">
         <div>
-          <a href="/" class="footer-logo"><img src="/images/logo.png" alt="Walkers Wood" width="140"></a>
+          <a href="/" class="footer-logo"><img src="/images/logo.png" alt="Walkers Wood"></a>
           <p class="footer-desc">Premium hardwood firewood, ethically sourced from our organic family farm in Clifton upon Teme, Worcestershire.</p>
           <div class="footer-badges">
             <img src="/images/woodsure-badge.png" alt="Woodsure Ready to Burn certified" height="55">
