@@ -30,12 +30,12 @@
       <div class="hero-inner">
         <span class="eyebrow">Woodsure Ready to Burn</span>
         <h1>Buy firewood, <span>direct from the farm</span></h1>
-        <p class="hero-sub">Oak · Ash · Cherry · Worcestershire</p>
+        <p class="hero-sub">Oak · Ash · Cherry<br>Across Worcestershire and Herefordshire</p>
         <p class="hero-desc">Premium split, dried hardwood logs, seasoned on our organic family farm in Clifton upon Teme. Delivered to your door &amp; stacked if you need it. <span class="hero-price">All prices include VAT.</span></p>
-        <div class="hero-chip">
+        <a href="#products" class="hero-chip" style="text-decoration:none;color:inherit;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
           Free delivery within 8 miles of WR6 6DT
-        </div>
+        </a>
       </div>
     </div>
   </section>
@@ -51,7 +51,7 @@
       <div class="products-hdr fade">
         <span class="label">Our firewood</span>
         <h2 class="section-title">Choose your <span>volume</span></h2>
-        <p>Select a product below to get started. All logs are split, dried to below 20% moisture, cut to 25cm and ready to burn.</p>
+        <p>Select a product below to get started. All logs are split, dried to below 20% moisture, cut to 23cm average and ready to burn.</p>
       </div>
 
       <!-- 3-column grid: 1m³, 2m³, 3m³ -->
@@ -63,7 +63,7 @@
           </div>
           <div class="card-body">
             <span class="card-sp">Hardwood logs</span>
-            <h3 class="card-name">1m³ Crate</h3>
+            <h3 class="card-name">1m³ Firewood</h3>
             <p class="card-desc">Perfect for occasional use or topping up your supply. Fills a standard log store.</p>
             <div class="card-foot">
               <div class="price">£190 <small>inc VAT</small></div>
@@ -79,7 +79,7 @@
           </div>
           <div class="card-body">
             <span class="card-sp">Hardwood logs</span>
-            <h3 class="card-name">2m³ Crate</h3>
+            <h3 class="card-name">2m³ Firewood</h3>
             <p class="card-desc">Our most popular choice. Enough to keep a wood burner going through autumn and into winter.</p>
             <div class="card-foot">
               <div class="price">£361 <small>inc VAT</small> <s>£380</s></div>
@@ -95,7 +95,7 @@
           </div>
           <div class="card-body">
             <span class="card-sp">Hardwood logs</span>
-            <h3 class="card-name">3m³ Crate</h3>
+            <h3 class="card-name">3m³ Firewood</h3>
             <p class="card-desc">Great value for regular burners. See you through the whole heating season with logs to spare.</p>
             <div class="card-foot">
               <div class="price">£542 <small>inc VAT</small> <s>£570</s></div>
@@ -106,8 +106,8 @@
 
       </div>
 
-      <!-- 2-column grid: 4m³ & Kindling -->
-      <div class="pgrid2">
+      <!-- 3-column grid: 4m³, 5m³, 6m³ -->
+      <div class="pgrid">
 
         <article class="card fade" data-id="4" data-name="4m³ Hardwood Logs" data-price="722" data-stacking="120">
           <div class="card-img">
@@ -116,7 +116,7 @@
           </div>
           <div class="card-body">
             <span class="card-sp">Hardwood logs</span>
-            <h3 class="card-name">4m³ Crate</h3>
+            <h3 class="card-name">4m³ Firewood</h3>
             <p class="card-desc">The ultimate winter supply. A full season's worth of fuel for serious wood burners and large properties.</p>
             <div class="card-foot">
               <div class="price">£722 <small>inc VAT</small> <s>£760</s></div>
@@ -124,6 +124,43 @@
             </div>
           </div>
         </article>
+
+        <article class="card fade" data-id="5" data-name="5m³ Hardwood Logs" data-price="902.50" data-stacking="150">
+          <div class="card-img">
+            <img src="/images/product-5m3.jpg" alt="5 cubic metres of hardwood logs" width="400" height="300" loading="lazy">
+            <span class="cbadge">Multi-season</span>
+          </div>
+          <div class="card-body">
+            <span class="card-sp">Hardwood logs</span>
+            <h3 class="card-name">5m³ Firewood</h3>
+            <p class="card-desc">Ideal for larger properties or those relying on wood as a primary heat source. Exceptional value.</p>
+            <div class="card-foot">
+              <div class="price">£902.50 <small>inc VAT</small> <s>£950</s></div>
+              <button class="sel-btn" type="button">Select</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card fade" data-id="6" data-name="6m³ Hardwood Logs" data-price="1083" data-stacking="180">
+          <div class="card-img">
+            <img src="/images/product-6m3.jpg" alt="6 cubic metres of hardwood logs" width="400" height="300" loading="lazy">
+            <span class="cbadge g">Maximum value</span>
+          </div>
+          <div class="card-body">
+            <span class="card-sp">Hardwood logs</span>
+            <h3 class="card-name">6m³ Firewood</h3>
+            <p class="card-desc">Our largest volume. Perfect for estates, businesses or stocking up for the entire year in one delivery.</p>
+            <div class="card-foot">
+              <div class="price">£1,083 <small>inc VAT</small> <s>£1,140</s></div>
+              <button class="sel-btn" type="button">Select</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Kindling standalone -->
+      <div class="pgrid2" style="max-width:400px;">
 
         <article class="card fade" data-id="k" data-name="Kindling Bag" data-price="8" data-stacking="0">
           <div class="card-img">
@@ -309,6 +346,7 @@
         <div class="field">
           <label for="deliveryDate">Preferred delivery date</label>
           <input type="date" id="deliveryDate" min="">
+          <div id="calendarWrap"></div>
           <p class="field-note">We deliver Tuesday to Saturday. We'll confirm your exact slot by text or email.</p>
         </div>
       </div>

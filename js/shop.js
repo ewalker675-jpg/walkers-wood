@@ -23,7 +23,7 @@
   // ── CONSTANTS ──
   const BASE_POSTCODE = 'WR66DT';
   const FREE_MILES = 8;
-  const PPM = 1.20;
+  const PPM = 2.00;
   const MAX_MILES = 20;
 
   // ── STATE ──
@@ -275,11 +275,11 @@
         if (el) {
           const amountEl = $('delPaidAmount');
           if (amountEl) amountEl.textContent = '£' + ch.toFixed(2);
-          el.innerHTML = 'You\'re ' + mi + ' miles away. Delivery: <strong>£' + ch.toFixed(2) + '</strong> (' + (mi - FREE_MILES).toFixed(1) + ' miles beyond free zone × £1.20/mile)';
+          el.innerHTML = 'You\'re ' + mi + ' miles away. Delivery: <strong>£' + ch.toFixed(2) + '</strong> (' + (mi - FREE_MILES).toFixed(1) + ' miles beyond free zone × £2/mile)';
           el.style.display = 'block';
         }
         if (msgEl) {
-          msgEl.textContent = 'Free delivery within 8 miles of WR6 6DT. Beyond that, £1.20/mile up to 20 miles.';
+          msgEl.textContent = 'Free delivery within 8 miles of WR6 6DT. Beyond that, £2/mile up to 20 miles.';
           msgEl.style.display = 'block';
         }
         if (dateSection) dateSection.classList.add('visible');
@@ -309,15 +309,86 @@
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
-  // ── BLOCKED DATE CHECK ──
+  // ── CUSTOM CALENDAR ──
   const dateEl = $('deliveryDate');
-  if (dateEl) {
-    dateEl.addEventListener('input', function () {
-      if (BLOCKED_DATES.includes(this.value)) {
-        alert('Sorry, that date is fully booked. Please choose another.');
-        this.value = '';
+  const calWrap = document.getElementById('calendarWrap');
+
+  if (dateEl && calWrap) {
+    // Hide native input, show custom calendar
+    dateEl.style.display = 'none';
+    let calMonth = new Date();
+    calMonth.setDate(1);
+    // Start from tomorrow's month
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    if (calMonth < new Date(tomorrow.getFullYear(), tomorrow.getMonth(), 1)) {
+      calMonth = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), 1);
+    }
+
+    function renderCalendar() {
+      const yr = calMonth.getFullYear();
+      const mo = calMonth.getMonth();
+      const firstDay = new Date(yr, mo, 1).getDay(); // 0=Sun
+      const daysInMonth = new Date(yr, mo + 1, 0).getDate();
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const moNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      
+      let html = '<div class="cal-header">';
+      html += '<button type="button" class="cal-prev">&lsaquo;</button>';
+      html += '<span class="cal-title">' + moNames[mo] + ' ' + yr + '</span>';
+      html += '<button type="button" class="cal-next">&rsaquo;</button>';
+      html += '</div>';
+      html += '<div class="cal-grid">';
+      dayNames.forEach(d => html += '<div class="cal-day-name">' + d + '</div>');
+      
+      // Offset for Monday start (0=Mon..6=Sun)
+      const offset = (firstDay + 6) % 7;
+      for (let i = 0; i < offset; i++) html += '<div class="cal-cell cal-empty"></div>';
+      
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = yr + '-' + String(mo+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+        const dateObj = new Date(yr, mo, d);
+        const isPast = dateObj <= today;
+        const isBlocked = BLOCKED_DATES.includes(dateStr);
+        const isSelected = dateEl.value === dateStr;
+        let cls = 'cal-cell';
+        if (isPast) cls += ' cal-past';
+        else if (isBlocked) cls += ' cal-blocked';
+        else cls += ' cal-available';
+        if (isSelected) cls += ' cal-selected';
+        html += '<div class="' + cls + '" data-date="' + dateStr + '">' + d + '</div>';
       }
-    });
+      html += '</div>';
+      html += '<div class="cal-legend"><span class="cal-leg-item"><span class="cal-dot cal-dot-green"></span> Available</span><span class="cal-leg-item"><span class="cal-dot cal-dot-orange"></span> Fully booked</span></div>';
+      
+      calWrap.innerHTML = html;
+      
+      // Events
+      calWrap.querySelector('.cal-prev').addEventListener('click', () => {
+        calMonth.setMonth(calMonth.getMonth() - 1);
+        const minMonth = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), 1);
+        if (calMonth < minMonth) calMonth = new Date(minMonth);
+        renderCalendar();
+      });
+      calWrap.querySelector('.cal-next').addEventListener('click', () => {
+        calMonth.setMonth(calMonth.getMonth() + 1);
+        renderCalendar();
+      });
+      calWrap.querySelectorAll('.cal-available').forEach(cell => {
+        cell.addEventListener('click', () => {
+          dateEl.value = cell.dataset.date;
+          renderCalendar();
+        });
+      });
+      calWrap.querySelectorAll('.cal-blocked').forEach(cell => {
+        cell.addEventListener('click', () => {
+          alert('Sorry, that date is fully booked. Please choose another.');
+        });
+      });
+    }
+    renderCalendar();
   }
 
   // ── STRIPE CHECKOUT ──

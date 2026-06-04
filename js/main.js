@@ -23,8 +23,8 @@
       <a href="/" class="header-logo"><img src="/images/logo.png" alt="Walkers Wood" width="140" height="40"></a>
       <nav class="header-nav">
         <a href="/"${isActive('index') ? ' class="active"' : ''}>Home</a>
-        <a href="/firewood.html"${isActive('firewood') ? ' class="active"' : ''}>Shop</a>
-        <a href="/services.html"${isActive('services') ? ' class="active"' : ''}>Services</a>
+        <a href="/firewood.html"${isActive('firewood') ? ' class="active"' : ''}>Buy Firewood</a>
+        <a href="/services.html"${isActive('services') ? ' class="active"' : ''}>Forestry</a>
         <a href="/about.html"${isActive('about') ? ' class="active"' : ''}>About</a>
         <a href="/faqs.html"${isActive('faqs') ? ' class="active"' : ''}>FAQs</a>
         <a href="/contact.html"${isActive('contact') ? ' class="active"' : ''}>Contact</a>
@@ -43,8 +43,8 @@
   mobileNav.id = 'mobileNav';
   mobileNav.innerHTML = `
     <a href="/"${isActive('index') ? ' class="active"' : ''}>Home</a>
-    <a href="/firewood.html"${isActive('firewood') ? ' class="active"' : ''}>Shop</a>
-    <a href="/services.html"${isActive('services') ? ' class="active"' : ''}>Services</a>
+    <a href="/firewood.html"${isActive('firewood') ? ' class="active"' : ''}>Buy Firewood</a>
+    <a href="/services.html"${isActive('services') ? ' class="active"' : ''}>Forestry</a>
     <a href="/about.html"${isActive('about') ? ' class="active"' : ''}>About</a>
     <a href="/faqs.html"${isActive('faqs') ? ' class="active"' : ''}>FAQs</a>
     <a href="/contact.html"${isActive('contact') ? ' class="active"' : ''}>Contact</a>
@@ -86,15 +86,15 @@
           <h4 class="footer-heading">Navigate</h4>
           <div class="footer-links">
             <a href="/">Home</a>
-            <a href="/firewood.html">Shop firewood</a>
-            <a href="/services.html">Services</a>
+            <a href="/firewood.html">Buy firewood</a>
+            <a href="/services.html">Forestry</a>
             <a href="/about.html">About us</a>
             <a href="/faqs.html">FAQs</a>
             <a href="/contact.html">Contact</a>
           </div>
         </div>
         <div>
-          <h4 class="footer-heading">Services</h4>
+          <h4 class="footer-heading">Forestry</h4>
           <div class="footer-links">
             <a href="/firewood.html">Hardwood firewood</a>
             <a href="/services.html">Woodland clearance</a>
