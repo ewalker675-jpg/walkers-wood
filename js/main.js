@@ -107,7 +107,7 @@
           <h4 class="footer-heading">Get in touch</h4>
           <div class="footer-contact">
             <p><a href="tel:07583338879">07583 338879</a></p>
-            <p><a href="mailto:edwardwalkersfarms@gmail.com">edwardwalkersfarms@gmail.com</a></p>
+            <p><a href="mailto:edwardwalkerfarms@gmail.com">edwardwalkerfarms@gmail.com</a></p>
             <p>Clifton upon Teme<br>Worcestershire, WR6 6DT</p>
           </div>
           <div class="footer-socials">

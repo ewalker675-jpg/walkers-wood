@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Walkers Wood</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Open Sans', sans-serif; background: #f5f5f0; color: #333; }
+    .admin-header { background: #4a5d36; color: white; padding: 1.2rem 2rem; display: flex; align-items: center; gap: 1rem; }
+    .admin-header h1 { font-size: 1.2rem; font-weight: 700; }
+    .admin-header small { opacity: 0.7; font-size: 0.8rem; }
+    .login-screen { max-width: 380px; margin: 4rem auto; background: white; border-radius: 12px; padding: 2.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
+    .login-screen h2 { margin-bottom: 1rem; color: #4a5d36; }
+    .login-screen input { width: 100%; padding: 0.8rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; }
+    .login-screen button { width: 100%; padding: 0.8rem; background: #4a5d36; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+    .login-screen button:hover { background: #3d4f2c; }
+    .admin-wrap { max-width: 900px; margin: 2rem auto; padding: 0 1rem; display: none; }
+    .section { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .section h2 { font-size: 1rem; color: #4a5d36; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f0f0e8; }
+    .section h2 span { font-weight: 400; font-size: 0.8rem; color: #888; }
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-weight: 600; font-size: 0.85rem; color: #555; margin-bottom: 0.3rem; }
+    .field input, .field textarea, .field select { width: 100%; padding: 0.6rem 0.8rem; border: 1.5px solid #ddd; border-radius: 6px; font-size: 0.92rem; font-family: inherit; }
+    .field input:focus, .field textarea:focus { border-color: #4a5d36; outline: none; }
+    .field small { color: #888; font-size: 0.75rem; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+    .product-card { background: #f9f9f4; border: 1.5px solid #e8e8e0; border-radius: 8px; padding: 1rem; }
+    .product-card h3 { font-size: 0.9rem; color: #4a5d36; margin-bottom: 0.6rem; }
+    .product-card .field { margin-bottom: 0.6rem; }
+    .product-card input { padding: 0.5rem; }
+    .blocked-dates-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .blocked-date-tag { background: #ffebee; border: 1px solid #ef9a9a; color: #c62828; border-radius: 6px; padding: 0.3rem 0.6rem; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
+    .blocked-date-tag button { background: none; border: none; color: #c62828; cursor: pointer; font-size: 1rem; line-height: 1; }
+    .add-date-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .add-date-row input { flex: 1; }
+    .add-date-row button { padding: 0.5rem 1rem; background: #4a5d36; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .save-bar { background: #4a5d36; color: white; padding: 1rem; border-radius: 12px; text-align: center; margin-bottom: 2rem; }
+    .save-bar button { padding: 0.8rem 2rem; background: white; color: #4a5d36; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; margin: 0 0.5rem; }
+    .save-bar button:hover { background: #f0f0e8; }
+    .save-bar button.secondary { background: transparent; color: white; border: 2px solid white; }
+    .output-box { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.8rem; white-space: pre-wrap; max-height: 400px; overflow-y: auto; display: none; margin-top: 1rem; }
+    .note { background: #fff8e1; border: 1px solid #ffcc80; border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.82rem; color: #6d4c00; margin-bottom: 1rem; }
+    .success { background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.85rem; color: #2e7d32; text-align: center; display: none; margin-bottom: 1rem; }
+    @media (max-width: 600px) { .product-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="admin-header">
+  <h1>🪵 Walkers Wood Admin</h1>
+  <small>Site Settings & Configuration</small>
+</div>
+
+<!-- Login -->
+<div class="login-screen" id="loginScreen">
+  <h2>🔒 Admin Login</h2>
+  <p style="color:#888; font-size:0.85rem; margin-bottom:1.5rem;">Enter your password to access the admin panel.</p>
+  <input type="password" id="adminPw" placeholder="Password" autofocus>
+  <button id="loginBtn">Log In</button>
+  <p id="loginError" style="color:#c62828; font-size:0.82rem; margin-top:0.5rem; display:none;">Incorrect password. Try again.</p>
+</div>
+
+<!-- Admin Panel -->
+<div class="admin-wrap" id="adminPanel">
+
+  <div class="note">
+    💡 <strong>How it works:</strong> Edit any settings below, then click "Generate Config File". Copy the output and paste it into <code>js/site-config.js</code> in your GitHub repository. The live site will update automatically within a minute.
+  </div>
+
+  <div class="success" id="successMsg">✅ Config file generated! Copy the code below and paste it into js/site-config.js</div>
+
+  <!-- PRODUCTS -->
+  <div class="section">
+    <h2>🪵 Product Prices <span>— inc VAT</span></h2>
+    <div class="product-grid" id="productGrid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- KINDLING -->
+  <div class="section">
+    <h2>🔥 Kindling</h2>
+    <div class="field">
+      <label>Price per bag (£)</label>
+      <input type="number" id="kindlingPrice" step="0.50" value="8">
+    </div>
+  </div>
+
+  <!-- DELIVERY -->
+  <div class="section">
+    <h2>🚛 Delivery Settings</h2>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+      <div class="field">
+        <label>Free delivery within (miles)</label>
+        <input type="number" id="freeWithin" value="8">
+      </div>
+      <div class="field">
+        <label>Charge per mile beyond free zone (£)</label>
+        <input type="number" id="perMile" step="0.10" value="2.00">
+      </div>
+      <div class="field">
+        <label>Maximum delivery distance (miles)</label>
+        <input type="number" id="maxMiles" value="20">
+      </div>
+      <div class="field">
+        <label>Base postcode</label>
+        <input type="text" id="basePostcode" value="WR66DT">
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCKED DATES -->
+  <div class="section">
+    <h2>📅 Blocked Delivery Dates <span>— Sundays & Mondays are auto-blocked</span></h2>
+    <p style="font-size:0.82rem; color:#888; margin-bottom:0.8rem;">Add specific dates when you can't deliver (e.g. Christmas Day, bank holidays). Sundays and Mondays are already blocked automatically — you don't need to add them here.</p>
+    <div class="blocked-dates-list" id="blockedDatesList"></div>
+    <div class="add-date-row">
+      <input type="date" id="newBlockedDate">
+      <button id="addBlockedDate">Add Date</button>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="section">
+    <h2>📞 Contact Details</h2>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+      <div class="field">
+        <label>Phone number</label>
+        <input type="tel" id="phone" value="07583338879">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="email" value="edwardwalkerfarms@gmail.com">
+      </div>
+      <div class="field">
+        <label>WhatsApp number (with country code)</label>
+        <input type="text" id="whatsapp" value="447583338879">
+      </div>
+    </div>
+  </div>
+
+  <!-- SOCIAL PROOF -->
+  <div class="section">
+    <h2>⭐ Social Proof</h2>
+    <div class="field">
+      <label>Happy customers this season</label>
+      <input type="number" id="customerCount" value="47">
+      <small>Displayed on homepage: "⭐ X happy customers this season"</small>
+    </div>
+  </div>
+
+  <!-- SEASONAL BANNER -->
+  <div class="section">
+    <h2>☀️ Seasonal Banner</h2>
+    <div class="field">
+      <label>Banner text (leave empty to hide)</label>
+      <textarea id="seasonalBanner" rows="2">Order in summer, thank yourself in November — beat the winter rush and guarantee your supply</textarea>
+      <small>Shown on the homepage. Set to empty to hide the banner.</small>
+    </div>
+  </div>
+
+  <!-- SAVE -->
+  <div class="save-bar">
+    <button id="generateBtn">📋 Generate Config File</button>
+    <button class="secondary" id="copyBtn" style="display:none;">Copy to Clipboard</button>
+  </div>
+
+  <div class="output-box" id="outputBox"></div>
+</div>
+
+<script>
+  // Simple password check (not secure — just a convenience gate)
+  const ADMIN_PW = 'walkerswood2022';
+  
+  document.getElementById('loginBtn').addEventListener('click', login);
+  document.getElementById('adminPw').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+  
+  function login() {
+    const pw = document.getElementById('adminPw').value;
+    if (pw === ADMIN_PW) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      loadCurrentConfig();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  }
+
+  // Products config
+  const defaultProducts = {
+    '1m3': { name: '1m³ Firewood', price: 190, stacking: 30, badge: '' },
+    '2m3': { name: '2m³ Firewood', price: 361, stacking: 60, badge: 'Most popular' },
+    '3m3': { name: '3m³ Firewood', price: 542, stacking: 90, badge: 'Best value' },
+    '4m3': { name: '4m³ Firewood', price: 722, stacking: 120, badge: 'Full season supply' },
+    '5m3': { name: '5m³ Firewood', price: 902.50, stacking: 150, badge: 'Multi-season' },
+    '6m3': { name: '6m³ Firewood', price: 1083, stacking: 180, badge: 'Maximum value' },
+  };
+
+  let blockedDates = [];
+
+  function loadCurrentConfig() {
+    // Populate product grid
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = '';
+    Object.entries(defaultProducts).forEach(([key, prod]) => {
+      grid.innerHTML += `
+        <div class="product-card">
+          <h3>${prod.name}</h3>
+          <div class="field">
+            <label>Price (£)</label>
+            <input type="number" step="0.50" id="price_${key}" value="${prod.price}">
+          </div>
+          <div class="field">
+            <label>Stacking price (£)</label>
+            <input type="number" step="1" id="stack_${key}" value="${prod.stacking}">
+          </div>
+          <div class="field">
+            <label>Badge text</label>
+            <input type="text" id="badge_${key}" value="${prod.badge}" placeholder="e.g. Most popular">
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // Blocked dates
+  document.getElementById('addBlockedDate').addEventListener('click', () => {
+    const input = document.getElementById('newBlockedDate');
+    const dateVal = input.value;
+    if (dateVal && !blockedDates.includes(dateVal)) {
+      blockedDates.push(dateVal);
+      blockedDates.sort();
+      renderBlockedDates();
+      input.value = '';
+    }
+  });
+
+  function renderBlockedDates() {
+    const list = document.getElementById('blockedDatesList');
+    list.innerHTML = blockedDates.map(d => 
+      `<span class="blocked-date-tag">${d} <button onclick="removeDate('${d}')">&times;</button></span>`
+    ).join('');
+  }
+
+  window.removeDate = function(d) {
+    blockedDates = blockedDates.filter(x => x !== d);
+    renderBlockedDates();
+  };
+
+  // Generate config
+  document.getElementById('generateBtn').addEventListener('click', () => {
+    const products = {};
+    Object.keys(defaultProducts).forEach(key => {
+      products[key] = {
+        name: defaultProducts[key].name,
+        price: parseFloat(document.getElementById('price_' + key).value) || 0,
+        stacking: parseFloat(document.getElementById('stack_' + key).value) || 0,
+        badge: document.getElementById('badge_' + key).value || '',
+      };
+    });
+
+    const config = `/* ============================================================
+   WALKERS WOOD — SITE CONFIGURATION
+   ============================================================
+   Ed: This file controls all the key settings for the website.
+   You can edit this file from the Admin page at /admin.html
+   or directly here. Save and push to update the live site.
+   ============================================================ */
+
+const SITE_CONFIG = {
+
+  // ── PRODUCT PRICES (inc VAT) ──
+  products: {
+${Object.entries(products).map(([k, p]) => 
+  `    '${k}':  { name: '${p.name}', price: ${p.price}, stacking: ${p.stacking}, badge: '${p.badge}' },`
+).join('\n')}
+  },
+
+  // ── KINDLING ──
+  kindlingPrice: ${document.getElementById('kindlingPrice').value || 8},
+
+  // ── DELIVERY ──
+  delivery: {
+    freeWithinMiles: ${document.getElementById('freeWithin').value || 8},
+    pricePerMile: ${document.getElementById('perMile').value || 2},
+    maxMiles: ${document.getElementById('maxMiles').value || 20},
+    basePostcode: '${(document.getElementById('basePostcode').value || 'WR66DT').toUpperCase()}',
+  },
+
+  // ── BLOCKED DELIVERY DATES ──
+  blockedDates: [
+${blockedDates.map(d => `    '${d}',`).join('\n')}
+  ],
+
+  // ── CONTACT ──
+  phone: '${document.getElementById('phone').value || '07583338879'}',
+  email: '${document.getElementById('email').value || 'edwardwalkerfarms@gmail.com'}',
+  whatsapp: '${document.getElementById('whatsapp').value || '447583338879'}',
+
+  // ── SOCIAL PROOF ──
+  customerCount: ${document.getElementById('customerCount').value || 47},
+  
+  // ── SEASONAL BANNER ──
+  seasonalBanner: '${(document.getElementById('seasonalBanner').value || '').replace(/'/g, "\\'")}',
+};
+
+if (typeof window !== 'undefined') {
+  window.SITE_CONFIG = SITE_CONFIG;
+}
+if (typeof module !== 'undefined') {
+  module.exports = SITE_CONFIG;
+}
+`;
+
+    const output = document.getElementById('outputBox');
+    output.textContent = config;
+    output.style.display = 'block';
+    document.getElementById('copyBtn').style.display = 'inline-block';
+    document.getElementById('successMsg').style.display = 'block';
+    setTimeout(() => document.getElementById('successMsg').style.display = 'none', 5000);
+  });
+
+  // Copy to clipboard
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    const text = document.getElementById('outputBox').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      document.getElementById('copyBtn').textContent = '✅ Copied!';
+      setTimeout(() => document.getElementById('copyBtn').textContent = 'Copy to Clipboard', 2000);
+    });
+  });
+</script>
+</body>
+</html>

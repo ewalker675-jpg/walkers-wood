@@ -13,6 +13,7 @@
   <meta property="og:image" content="/images/hero-home.jpg">
   <link rel="stylesheet" href="/css/style.css">
   <script src="/js/main.js" defer></script>
+  <script src="/js/calculator.js" defer></script>
 </head>
 <body>
 
@@ -33,7 +34,7 @@
         <div class="eyebrow">Woodsure Ready to Burn Certified</div>
         <h1>Great firewood, <span>straight from our Farm to your Fire</span></h1>
         <p class="hero-sub">Oak · Ash · Cherry<br>Across Worcestershire and Herefordshire</p>
-        <p class="hero-desc">Split, dried and seasoned logs from our organic family farm in Clifton upon Teme. Cut, split and delivered to your door. <span class="hero-price">From £190/m³ inc VAT.</span></p>
+        <p class="hero-desc">Split and dried seasoned logs from our organic family farm in Clifton upon Teme. Split, dried and delivered to your door. <span class="hero-price">From £190/m³ inc VAT.</span></p>
         <div class="hero-btns">
           <a href="/firewood.html" class="btn-primary">Shop Firewood</a>
           <a href="https://wa.me/447583338879" target="_blank" rel="noopener" class="btn-outline">WhatsApp Ed</a>
@@ -46,6 +47,12 @@
   <div class="logo-bar">
     <img src="/images/logo.png" alt="Walkers Wood logo">
   </div>
+
+  <!-- ── SUMMER STOCKING BANNER ── -->
+  <section class="summer-banner fade" style="background:var(--c2); text-align:center; padding:1.5rem 1rem;">
+    <p style="font-size:1.1rem; font-weight:700; color:var(--c6); margin:0;">☀️ Order in summer, thank yourself in November</p>
+    <p style="font-size:0.88rem; color:var(--c8); margin:0.3rem 0 0;">Beat the winter rush and guarantee your supply. Delivery slots are wide open right now.</p>
+  </section>
 
   <!-- ── TRUST BAR ── -->
   <section class="trust">
@@ -86,7 +93,7 @@
       <div class="products-hdr">
         <span class="label">Our Firewood</span>
         <h2 class="section-title">Premium hardwood <span>logs</span></h2>
-        <p>Split, dried oak, ash and cherry - cut, split and ready to burn. All prices include VAT.</p>
+        <p>Split and dried oak, ash and cherry — ready to burn. All prices include VAT.</p>
       </div>
 
       <div class="pgrid">
@@ -98,7 +105,7 @@
           <div class="card-body">
             <span class="card-sp">Hardwood Logs</span>
             <h3 class="card-name">1m³ Firewood</h3>
-            <p class="card-desc">One cubic metre of split, dried hardwood logs. Perfect for occasional use or topping up.</p>
+            <p class="card-desc">One cubic metre of split and dried hardwood logs. Perfect for occasional use or topping up.</p>
             <div class="card-foot">
               <div class="price">£190 <small>inc VAT</small></div>
               <a href="/firewood.html" class="sel-btn">Order</a>
@@ -115,7 +122,7 @@
           <div class="card-body">
             <span class="card-sp">Hardwood Logs</span>
             <h3 class="card-name">2m³ Firewood</h3>
-            <p class="card-desc">Two cubic metres of split, dried hardwood logs. Our best-selling option — great value for regular burners.</p>
+            <p class="card-desc">Two cubic metres of split and dried hardwood logs. Our best-selling option — great value for regular burners.</p>
             <div class="card-foot">
               <div class="price">£361 <small>inc VAT · Save £19</small></div>
               <a href="/firewood.html" class="sel-btn">Order</a>
@@ -123,17 +130,18 @@
           </div>
         </div>
 
-        <!-- Kindling -->
+        <!-- 3m³ Best Value -->
         <div class="card">
           <div class="card-img">
-            <img src="/images/kindling.jpg" alt="Bag of kindling wood" loading="lazy">
+            <img src="/images/product-3m3.jpg" alt="3 cubic metres of hardwood firewood logs" loading="lazy">
+            <span class="cbadge g">Best Value</span>
           </div>
           <div class="card-body">
-            <span class="card-sp">Kindling</span>
-            <h3 class="card-name">Kindling</h3>
-            <p class="card-desc">Bags of dry kindling, perfect for getting your fire started quickly every time.</p>
+            <span class="card-sp">Hardwood Logs</span>
+            <h3 class="card-name">3m³ Firewood</h3>
+            <p class="card-desc">Less than £11 a week to keep your home warm all season. Great value for regular burners.</p>
             <div class="card-foot">
-              <div class="price">£8 <small>per bag · inc VAT</small></div>
+              <div class="price">£542 <small>inc VAT · Save £28</small></div>
               <a href="/firewood.html" class="sel-btn">Order</a>
             </div>
           </div>
@@ -141,7 +149,7 @@
       </div>
 
       <div class="pfooter">
-        <p class="pnote">Need more? We also offer 3m³, 4m³, 5m³ and 6m³ loads — <a href="/firewood.html" style="color:var(--c6);font-weight:700">view all options</a>.</p>
+        <p class="pnote">Order 2m³ or more and save 5% — automatically applied. We also offer 4m³, 5m³ and 6m³ loads — <a href="/firewood.html" style="color:var(--c6);font-weight:700">view all options</a>.</p>
       </div>
     </div>
   </section>
@@ -166,11 +174,11 @@
         <h2 class="section-title section-title--light">Meet Ed, <span>9th generation farmer</span></h2>
         <p class="about-body">I'm Ed Walker, and I run Walkers Wood from our organic family farm in Clifton upon Teme, Worcestershire. My family has farmed this land since the 1700s — nine generations of working with the countryside, not against it.</p>
         <p class="about-body">Every log we sell comes from sustainably managed woodland on and around our farm. We fell, process and deliver it all ourselves — no middlemen, no mystery about where your firewood comes from.</p>
-        <div class="woodsure">
-          <img src="/images/woodsure-badge.png" alt="Woodsure Ready to Burn certification badge">
+        <div class="woodsure" style="gap:1rem;">
+          <img src="/images/woodsure-badge.png" alt="Woodsure Ready to Burn certification badge" style="width:60px;height:auto;">
           <div class="woodsure-t">
-            <strong>Woodsure Certified</strong>
-            <p>Ready to Burn — independently tested below 20% moisture.</p>
+            <strong>Not all firewood is equal. Ours is certified.</strong>
+            <p>Woodsure Ready to Burn — independently tested below 20% moisture, and guaranteed to burn cleanly.</p>
           </div>
         </div>
         <a href="/about.html" class="btn-outline">Read Our Story</a>
@@ -189,7 +197,7 @@
         <div class="how-step">
           <div class="how-num">1</div>
           <h3>Choose your logs</h3>
-          <p>Pick the volume you need — 1m³, 2m³, 3m³ or 4m³ of split, dried hardwood.</p>
+          <p>Pick the volume you need — 1m³ up to 6m³ of split and dried hardwood.</p>
         </div>
         <div class="how-step">
           <div class="how-num">2</div>
@@ -216,6 +224,7 @@
       <div class="reviews-hdr">
         <span class="label label--light">Reviews</span>
         <h2 class="section-title section-title--light">What our customers <span>say</span></h2>
+        <p style="color:rgba(255,255,255,0.7); font-size:0.95rem;">⭐ 47 happy customers this season</p>
       </div>
       <div class="rev-grid">
         <div class="rev-card">
@@ -251,6 +260,54 @@
           <p class="rev-text">"Fantastic service, good quality wood and burns really well. Thank you Walkers Wood."</p>
           <span class="rev-author">— Jamie L.</span>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SOCIAL PROOF LINE ── -->
+  <section class="tribe-sec fade" style="text-align:center; padding:2rem 1rem;">
+    <p style="font-size:1.1rem; color:var(--c8); font-weight:600; margin:0;">Join hundreds of Worcestershire and Herefordshire homes who burn Walkers Wood</p>
+    <p style="font-size:0.85rem; color:var(--c7); margin:0.3rem 0 0;">We only deliver ourselves. No couriers, no pallets dropped in the rain. That’s why we keep it local.</p>
+  </section>
+
+  <!-- ── IKEA EFFECT LOG CALCULATOR ── -->
+  <section class="calc-sec fade">
+    <div class="wrap">
+      <div class="calc-hdr">
+        <span class="label">How much do I need?</span>
+        <h2 class="section-title">Find your <span>perfect volume</span></h2>
+        <p>Answer three quick questions and we’ll recommend the right amount for your home.</p>
+      </div>
+      <div class="calc-widget" id="logCalc">
+        <!-- Step 1 -->
+        <div class="calc-step active" data-step="1">
+          <h3>How many wood burners or open fires do you have?</h3>
+          <div class="calc-opts">
+            <button class="calc-opt" data-score="1">1</button>
+            <button class="calc-opt" data-score="2">2</button>
+            <button class="calc-opt" data-score="3">3 or more</button>
+          </div>
+        </div>
+        <!-- Step 2 -->
+        <div class="calc-step" data-step="2">
+          <h3>How often do you typically burn?</h3>
+          <div class="calc-opts">
+            <button class="calc-opt" data-score="1">Occasional evenings</button>
+            <button class="calc-opt" data-score="2">Most evenings</button>
+            <button class="calc-opt" data-score="3">Daily, all day</button>
+          </div>
+        </div>
+        <!-- Step 3 -->
+        <div class="calc-step" data-step="3">
+          <h3>Is wood your main source of heat?</h3>
+          <div class="calc-opts">
+            <button class="calc-opt" data-score="1">No, just for cosiness</button>
+            <button class="calc-opt" data-score="2">Partly, alongside central heating</button>
+            <button class="calc-opt" data-score="3">Yes, main heat source</button>
+          </div>
+        </div>
+        <!-- Result -->
+        <div class="calc-result" id="calcResult"></div>
       </div>
     </div>
   </section>

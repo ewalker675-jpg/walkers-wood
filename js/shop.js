@@ -31,31 +31,126 @@
   let delCharge = null;
   let delMiles = null;
   let delBlocked = false;
+  let kindlingBags = 0;
+  let kindlingModalShown = false;
 
   // ── HELPERS ──
   const $ = (id) => document.getElementById(id);
-  const getQty = () => selected && selected.id === 'k' ? (parseInt($('kindlingQty')?.value) || 1) : 1;
-  const getStack = () => selected && selected.id !== 'k' && $('stackingToggle')?.checked;
+  const getStack = () => selected && $('stackingToggle')?.checked;
+
+  // ── VOLUME BLOCK VISUALISER ──
+  document.querySelectorAll('.card[data-id]').forEach(card => {
+    const id = card.dataset.id;
+    if (id === 'k') return; // skip kindling
+    const vol = parseInt(id) || 0;
+    if (vol < 1) return;
+    const imgWrap = card.querySelector('.card-img');
+    if (!imgWrap) return;
+
+    // Add dark overlay
+    const darken = document.createElement('div');
+    darken.className = 'vol-darken';
+    imgWrap.appendChild(darken);
+
+    // Add block overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'vol-overlay' + (vol >= 5 ? ' vol-blocks-' + vol : '');
+    for (let i = 0; i < vol; i++) {
+      const block = document.createElement('div');
+      block.className = 'vol-block';
+      block.textContent = '1m³';
+      block.style.animationDelay = (i * 80) + 'ms';
+      overlay.appendChild(block);
+    }
+    imgWrap.appendChild(overlay);
+
+    // Mobile info button
+    const infoBtn = document.createElement('button');
+    infoBtn.className = 'vol-info-btn';
+    infoBtn.textContent = 'ⓘ';
+    infoBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      imgWrap.classList.toggle('vol-show');
+      overlay.querySelectorAll('.vol-block').forEach(b => { b.classList.remove('animate'); void b.offsetWidth; b.classList.add('animate'); });
+    });
+    imgWrap.appendChild(infoBtn);
+
+    // Hover animation trigger
+    imgWrap.addEventListener('mouseenter', () => {
+      overlay.querySelectorAll('.vol-block').forEach(b => { b.classList.remove('animate'); void b.offsetWidth; b.classList.add('animate'); });
+    });
+  });
+
+  // ── KINDLING MODAL ──
+  const kindlingModal = $('kindlingModal');
+  const kindlingCountEl = $('kindlingCount');
+  let pendingSelection = null;
+
+  if ($('kindlingMinus')) {
+    $('kindlingMinus').addEventListener('click', () => {
+      let c = parseInt(kindlingCountEl.textContent) || 1;
+      if (c > 1) kindlingCountEl.textContent = c - 1;
+    });
+  }
+  if ($('kindlingPlus')) {
+    $('kindlingPlus').addEventListener('click', () => {
+      let c = parseInt(kindlingCountEl.textContent) || 1;
+      if (c < 20) kindlingCountEl.textContent = c + 1;
+    });
+  }
+  if ($('kindlingAddBtn')) {
+    $('kindlingAddBtn').addEventListener('click', () => {
+      kindlingBags = parseInt(kindlingCountEl.textContent) || 1;
+      kindlingModal.classList.remove('visible');
+      completeSelection();
+    });
+  }
+  if ($('kindlingSkipBtn')) {
+    $('kindlingSkipBtn').addEventListener('click', () => {
+      kindlingBags = 0;
+      kindlingModal.classList.remove('visible');
+      completeSelection();
+    });
+  }
+
+  function completeSelection() {
+    if (!pendingSelection) return;
+    selected = pendingSelection;
+    pendingSelection = null;
+    // Volume unlock milestone
+    const unlock = $('volUnlock');
+    if (unlock) {
+      unlock.classList.toggle('visible', selected.id === '1');
+    }
+    updateBar();
+    updateSummary();
+  }
 
   // ── PRODUCT SELECTION ──
   document.querySelectorAll('.card[data-id]').forEach((card) => {
     const btn = card.querySelector('.sel-btn');
     if (!btn) return;
+    if (card.dataset.id === 'k') return; // kindling removed as standalone
 
     const handler = (e) => {
       e.stopPropagation();
       document.querySelectorAll('.card[data-id]').forEach((c) => c.classList.remove('selected'));
       card.classList.add('selected');
-      selected = {
+      pendingSelection = {
         id: card.dataset.id,
         name: card.dataset.name,
         price: parseFloat(card.dataset.price),
         stacking: parseFloat(card.dataset.stacking),
       };
-      const kr = $('kindlingRow');
-      if (kr) kr.style.display = selected.id === 'k' ? 'block' : 'none';
-      updateBar();
-      updateSummary();
+
+      // Show kindling modal
+      if (kindlingModal && !kindlingModalShown) {
+        kindlingModalShown = true;
+        kindlingCountEl.textContent = '1';
+        kindlingModal.classList.add('visible');
+      } else {
+        completeSelection();
+      }
     };
 
     btn.addEventListener('click', handler);
@@ -96,6 +191,17 @@
     return wood + stack + del;
   }
 
+  // ── CHECKOUT PROGRESS BAR ──
+  function updateProgress(stepNum) {
+    const steps = document.querySelectorAll('.progress-step');
+    steps.forEach(s => {
+      const n = parseInt(s.dataset.step);
+      s.classList.remove('active', 'done');
+      if (n < stepNum) s.classList.add('done');
+      else if (n === stepNum) s.classList.add('active');
+    });
+  }
+
   // ── MODAL ──
   const modal = $('checkoutModal');
   const openBtn = $('openCheckout');
@@ -107,6 +213,7 @@
       updateSummary();
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
+      updateProgress(2); // Product chosen, now need postcode
       // Set min date to tomorrow
       const dateEl = $('deliveryDate');
       if (dateEl) {
@@ -134,24 +241,23 @@
   // ── ORDER SUMMARY ──
   function updateSummary() {
     if (!selected) return;
-    const isK = selected.id === 'k';
-    const qty = getQty();
-    const wood = isK ? selected.price * qty : selected.price;
+    const wood = selected.price;
     const stack = getStack() ? selected.stacking : 0;
+    const kindlingCost = kindlingBags * 8;
     const dc = delCharge !== null && !delBlocked ? delCharge : null;
 
     // Product row
     const prodRow = $('sumProduct');
     if (prodRow) {
       const spans = prodRow.querySelectorAll('span');
-      if (spans[0]) spans[0].textContent = isK ? selected.name + ' × ' + qty : selected.name;
+      if (spans[0]) spans[0].textContent = selected.name;
       if (spans[1]) spans[1].textContent = '£' + wood.toFixed(2);
     }
 
     // Stacking row
     const stackRow = $('sumStacking');
     if (stackRow) {
-      if (getStack() && !isK) {
+      if (getStack()) {
         stackRow.style.display = 'flex';
         const spans = stackRow.querySelectorAll('span');
         if (spans[1]) spans[1].textContent = '£' + stack.toFixed(2);
@@ -160,10 +266,24 @@
       }
     }
 
-    // Kindling row
+    // Kindling row (add-on)
     const kindRow = $('sumKindling');
     if (kindRow) {
-      kindRow.style.display = isK && qty > 1 ? 'flex' : 'none';
+      if (kindlingBags > 0) {
+        kindRow.style.display = 'flex';
+        kindRow.innerHTML = '<span>Kindling × ' + kindlingBags + '</span><span>£' + kindlingCost.toFixed(2) + ' <button class="kindling-remove" id="removeKindling">Remove</button></span>';
+        const removeBtn = $('removeKindling');
+        if (removeBtn) {
+          removeBtn.addEventListener('click', () => {
+            kindlingBags = 0;
+            kindlingModalShown = false; // allow re-prompt
+            updateSummary();
+            updateBar();
+          });
+        }
+      } else {
+        kindRow.style.display = 'none';
+      }
     }
 
     // Delivery row
@@ -189,9 +309,9 @@
       const spans = totalRow.querySelectorAll('span');
       if (spans[1]) {
         if (dc !== null) {
-          spans[1].textContent = '£' + (wood + stack + dc).toFixed(2) + ' inc VAT';
+          spans[1].textContent = '£' + (wood + stack + kindlingCost + dc).toFixed(2) + ' inc VAT';
         } else {
-          spans[1].textContent = '£' + (wood + stack).toFixed(2) + ' + delivery';
+          spans[1].textContent = '£' + (wood + stack + kindlingCost).toFixed(2) + ' + delivery';
         }
       }
     }
@@ -267,6 +387,7 @@
         }
         if (dateSection) dateSection.classList.add('visible');
         if (detailsSection) detailsSection.classList.add('visible');
+        updateProgress(3);
       } else {
         delBlocked = false;
         const ch = Math.round((mi - FREE_MILES) * PPM * 100) / 100;
@@ -284,6 +405,7 @@
         }
         if (dateSection) dateSection.classList.add('visible');
         if (detailsSection) detailsSection.classList.add('visible');
+        updateProgress(3);
       }
 
       updateSummary();
@@ -350,18 +472,21 @@
       for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = yr + '-' + String(mo+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
         const dateObj = new Date(yr, mo, d);
+        const dayOfWeek = dateObj.getDay(); // 0=Sun, 1=Mon
         const isPast = dateObj <= today;
+        const isNoDelivery = (dayOfWeek === 0 || dayOfWeek === 1); // Sun or Mon
         const isBlocked = BLOCKED_DATES.includes(dateStr);
         const isSelected = dateEl.value === dateStr;
         let cls = 'cal-cell';
         if (isPast) cls += ' cal-past';
+        else if (isNoDelivery) cls += ' cal-nodelivery';
         else if (isBlocked) cls += ' cal-blocked';
         else cls += ' cal-available';
         if (isSelected) cls += ' cal-selected';
         html += '<div class="' + cls + '" data-date="' + dateStr + '">' + d + '</div>';
       }
       html += '</div>';
-      html += '<div class="cal-legend"><span class="cal-leg-item"><span class="cal-dot cal-dot-green"></span> Available</span><span class="cal-leg-item"><span class="cal-dot cal-dot-orange"></span> Fully booked</span></div>';
+      html += '<div class="cal-legend"><span class="cal-leg-item"><span class="cal-dot cal-dot-green"></span> Available</span><span class="cal-leg-item"><span class="cal-dot cal-dot-orange"></span> Fully booked</span><span class="cal-leg-item"><span class="cal-dot cal-dot-red"></span> No delivery</span></div>';
       
       calWrap.innerHTML = html;
       
@@ -385,6 +510,11 @@
       calWrap.querySelectorAll('.cal-blocked').forEach(cell => {
         cell.addEventListener('click', () => {
           alert('Sorry, that date is fully booked. Please choose another.');
+        });
+      });
+      calWrap.querySelectorAll('.cal-nodelivery').forEach(cell => {
+        cell.addEventListener('click', () => {
+          alert('Sorry, we don\'t deliver on Sundays or Mondays. Please choose Tuesday – Saturday.');
         });
       });
     }

@@ -40,7 +40,7 @@
     ].filter(Boolean).join('\n');
 
     // Open mailto
-    window.location.href = 'mailto:edwardwalkersfarms@gmail.com?subject=' +
+    window.location.href = 'mailto:edwardwalkerfarms@gmail.com?subject=' +
       encodeURIComponent('Website enquiry — ' + sb + ' — ' + fn + ' ' + ln) +
       '&body=' + encodeURIComponent(body);
 
