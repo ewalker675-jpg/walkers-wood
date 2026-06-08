@@ -31,7 +31,7 @@
         <span class="eyebrow">Woodsure Ready to Burn</span>
         <h1>Buy firewood, <span>direct from the farm</span></h1>
         <p class="hero-sub">Oak · Ash · Cherry<br>Across Worcestershire and Herefordshire</p>
-        <p class="hero-desc">Premium split and dried hardwood logs, seasoned on our organic family farm in Clifton upon Teme. Delivered to your door &amp; stacked if you need it. <span class="hero-price">All prices include VAT.</span></p>
+        <p class="hero-desc">Premium split and dried hardwood logs, sustainably sourced from our farm and local farms across Worcestershire and Herefordshire — all split and dried on site in Clifton upon Teme. Delivered to your door &amp; stacked if you need it. <span class="hero-price">All prices include VAT.</span></p>
         <a href="#products" class="hero-chip" style="text-decoration:none;color:inherit;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
           Free delivery within 8 miles of WR6 6DT
@@ -259,7 +259,7 @@
             <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"/><path d="M16 8h4l3 3v5a2 2 0 0 1-2 2h-1"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
           </div>
           <strong>Free Local Delivery</strong>
-          <p>Free delivery within 8 miles of WR6 6DT, Worcestershire</p>
+          <p>Free delivery within 8 miles of WR6 6DT, across Worcestershire and Herefordshire</p>
         </div>
 
         <div class="wi fade">
@@ -355,26 +355,25 @@
         <div class="divider"></div>
         <h3 style="font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--c6);margin-bottom:1.2rem;">Your details</h3>
 
-        <div class="field-row">
-          <div class="field">
-            <label for="custName">Full name *</label>
-            <input type="text" id="custName" required autocomplete="name" placeholder="Ed Walker">
-          </div>
-          <div class="field">
-            <label for="custEmail">Email address *</label>
-            <input type="email" id="custEmail" required autocomplete="email" placeholder="you@example.com">
-          </div>
+        <div class="field">
+          <label for="custName">Full name *</label>
+          <input type="text" id="custName" required autocomplete="name" placeholder="Ed Walker">
         </div>
 
-        <div class="field-row">
-          <div class="field">
-            <label for="custPhone">Phone number *</label>
-            <input type="tel" id="custPhone" required autocomplete="tel" placeholder="07583 338879">
-          </div>
-          <div class="field">
-            <label for="custAddress">Delivery address *</label>
-            <input type="text" id="custAddress" required autocomplete="street-address" placeholder="Farm Lane, Clifton upon Teme">
-          </div>
+        <div class="field">
+          <label for="custEmail">Email address *</label>
+          <input type="email" id="custEmail" required autocomplete="email" placeholder="you@example.com">
+        </div>
+
+        <div class="field">
+          <label for="custPhone">Phone number *</label>
+          <input type="tel" id="custPhone" required autocomplete="tel" placeholder="07583 338879">
+          <p class="field-note">Ed will contact you with an estimated arrival time when he sets off for your delivery</p>
+        </div>
+
+        <div class="field">
+          <label for="custAddress">Delivery address *</label>
+          <input type="text" id="custAddress" required autocomplete="street-address" placeholder="Farm Lane, Clifton upon Teme">
         </div>
 
         <div class="field">
@@ -392,6 +391,7 @@
         <button class="submit-btn" id="stripePayBtn" type="button" disabled>
           Pay with Stripe
         </button>
+        <p class="form-note" style="margin-bottom: 0.5rem; text-align: center;">By placing an order you agree to our <a href="/terms-and-conditions.html" target="_blank" style="color: var(--c6); font-weight: 600;">terms and conditions</a>. Orders can be cancelled up to 2 days before delivery.</p>
         <p class="form-note">You'll be redirected to Stripe's secure checkout. We never see or store your card details.</p>
       </div>
 
@@ -413,13 +413,15 @@
 <div class="kindling-modal-overlay" id="kindlingModal">
   <div class="kindling-modal">
     <h3>🪵 Add kindling to your order?</h3>
-    <p>Would you like to add a large bag of kindling for £8? Perfect for getting your fire started quickly.</p>
+    <p>Would you like to add a large bag of kindling? Perfect for getting your fire started quickly.</p>
+    <p style="font-weight:700; color:var(--c6); margin-bottom:0.8rem;">£8 per bag</p>
     <div class="kindling-qty">
       <button type="button" id="kindlingMinus">−</button>
       <span id="kindlingCount">1</span>
       <button type="button" id="kindlingPlus">+</button>
     </div>
-    <button class="btn-primary kindling-add" id="kindlingAddBtn">Yes, add kindling</button>
+    <p id="kindlingTotal" style="font-size:1.1rem; font-weight:800; color:var(--c9); margin:0.6rem 0;">Total: £8</p>
+    <button class="btn-primary kindling-add" id="kindlingAddBtn">YES, ADD KINDLING — £8</button>
     <button class="kindling-skip" id="kindlingSkipBtn">No thanks</button>
   </div>
 </div>

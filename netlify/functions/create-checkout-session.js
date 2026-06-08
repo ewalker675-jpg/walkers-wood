@@ -41,6 +41,21 @@ exports.handler = async (event) => {
       });
     }
 
+    // Kindling add-on
+    if (data.kindlingBags > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'gbp',
+          product_data: {
+            name: 'Large bag of kindling',
+            description: 'Perfect for starting your fire quickly',
+          },
+          unit_amount: 800, // £8 per bag
+        },
+        quantity: data.kindlingBags,
+      });
+    }
+
     // Delivery charge
     if (delivery > 0) {
       lineItems.push({
@@ -66,6 +81,11 @@ exports.handler = async (event) => {
       delivery_miles: String(deliveryMiles),
       w3w: customer.w3w || '',
       drop_note: customer.dropNote || '',
+      product_ordered: product,
+      stacking_added: String(stacking > 0),
+      kindling_qty: String(data.kindlingBags || 0),
+      delivery_charge: String(delivery),
+      total_price: String(total)
     };
 
     // Create Stripe Checkout Session
@@ -75,7 +95,7 @@ exports.handler = async (event) => {
       customer_email: customer.email,
       line_items: lineItems,
       metadata: metadata,
-      success_url: event.headers.origin + '/firewood.html?payment=success',
+      success_url: event.headers.origin + '/firewood.html?payment=success&session_id={CHECKOUT_SESSION_ID}',
       cancel_url: event.headers.origin + '/firewood.html?payment=cancelled',
       // Send receipt email automatically
       payment_intent_data: {

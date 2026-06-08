@@ -38,6 +38,100 @@
   const $ = (id) => document.getElementById(id);
   const getStack = () => selected && $('stackingToggle')?.checked;
 
+  // ── PERSISTENT BASKET ──
+  function saveBasket() {
+    if (!selected) {
+      localStorage.removeItem('ww_basket');
+      window.dispatchEvent(new Event('cartUpdated'));
+      return;
+    }
+    const basket = {
+      selectedProduct: {
+        id: selected.id,
+        name: selected.name,
+        price: selected.price,
+        stacking: selected.stacking
+      },
+      stacking: getStack(),
+      kindlingBags: kindlingBags,
+      postcode: $('postcode')?.value.trim() || '',
+      deliveryMiles: delMiles,
+      deliveryCharge: delCharge,
+      deliveryDate: dateEl?.value || '',
+      customer: {
+        name: $('custName')?.value.trim() || '',
+        email: $('custEmail')?.value.trim() || '',
+        phone: $('custPhone')?.value.trim() || '',
+        address: $('custAddress')?.value.trim() || '',
+        w3w: $('custW3W')?.value.trim() || '',
+        notes: $('custNotes')?.value.trim() || ''
+      }
+    };
+    localStorage.setItem('ww_basket', JSON.stringify(basket));
+    window.dispatchEvent(new Event('cartUpdated'));
+  }
+
+  async function loadBasket() {
+    const raw = localStorage.getItem('ww_basket');
+    if (!raw) return;
+    try {
+      const basket = JSON.parse(raw);
+      if (basket && basket.selectedProduct) {
+        selected = {
+          id: basket.selectedProduct.id,
+          name: basket.selectedProduct.name,
+          price: basket.selectedProduct.price,
+          stacking: basket.selectedProduct.stacking
+        };
+        kindlingBags = basket.kindlingBags || 0;
+        
+        document.querySelectorAll('.card[data-id]').forEach(card => {
+          if (card.dataset.id === selected.id) {
+            card.classList.add('selected');
+          } else {
+            card.classList.remove('selected');
+          }
+        });
+
+        const stackEl = $('stackingToggle');
+        if (stackEl) {
+          stackEl.checked = !!basket.stacking;
+        }
+
+        if (basket.postcode) {
+          const pcInput = $('postcode');
+          if (pcInput) pcInput.value = basket.postcode;
+          delMiles = basket.deliveryMiles;
+          delCharge = basket.deliveryCharge;
+          
+          await checkPostcode();
+        }
+
+        if (basket.deliveryDate) {
+          const dateEl = $('deliveryDate');
+          if (dateEl) {
+            dateEl.value = basket.deliveryDate;
+            if (typeof renderCalendar === 'function') renderCalendar();
+          }
+        }
+
+        if (basket.customer) {
+          if ($('custName')) $('custName').value = basket.customer.name || '';
+          if ($('custEmail')) $('custEmail').value = basket.customer.email || '';
+          if ($('custPhone')) $('custPhone').value = basket.customer.phone || '';
+          if ($('custAddress')) $('custAddress').value = basket.customer.address || '';
+          if ($('custW3W')) $('custW3W').value = basket.customer.w3w || '';
+          if ($('custNotes')) $('custNotes').value = basket.customer.notes || '';
+        }
+
+        updateBar();
+        updateSummary();
+      }
+    } catch (e) {
+      console.error('Failed to load basket', e);
+    }
+  }
+
   // ── VOLUME BLOCK VISUALISER ──
   document.querySelectorAll('.card[data-id]').forEach(card => {
     const id = card.dataset.id;
@@ -84,22 +178,33 @@
   // ── KINDLING MODAL ──
   const kindlingModal = $('kindlingModal');
   const kindlingCountEl = $('kindlingCount');
+  const kindlingTotalEl = $('kindlingTotal');
+  const kindlingAddBtn = $('kindlingAddBtn');
+  const KINDLING_PRICE = 8;
   let pendingSelection = null;
+
+  function updateKindlingDisplay() {
+    if (!kindlingCountEl) return;
+    const c = parseInt(kindlingCountEl.textContent) || 1;
+    const total = c * KINDLING_PRICE;
+    if (kindlingTotalEl) kindlingTotalEl.textContent = 'Total: £' + total;
+    if (kindlingAddBtn) kindlingAddBtn.textContent = 'YES, ADD KINDLING — £' + total;
+  }
 
   if ($('kindlingMinus')) {
     $('kindlingMinus').addEventListener('click', () => {
       let c = parseInt(kindlingCountEl.textContent) || 1;
-      if (c > 1) kindlingCountEl.textContent = c - 1;
+      if (c > 1) { kindlingCountEl.textContent = c - 1; updateKindlingDisplay(); }
     });
   }
   if ($('kindlingPlus')) {
     $('kindlingPlus').addEventListener('click', () => {
       let c = parseInt(kindlingCountEl.textContent) || 1;
-      if (c < 20) kindlingCountEl.textContent = c + 1;
+      if (c < 20) { kindlingCountEl.textContent = c + 1; updateKindlingDisplay(); }
     });
   }
-  if ($('kindlingAddBtn')) {
-    $('kindlingAddBtn').addEventListener('click', () => {
+  if (kindlingAddBtn) {
+    kindlingAddBtn.addEventListener('click', () => {
       kindlingBags = parseInt(kindlingCountEl.textContent) || 1;
       kindlingModal.classList.remove('visible');
       completeSelection();
@@ -124,6 +229,7 @@
     }
     updateBar();
     updateSummary();
+    saveBasket();
   }
 
   // ── PRODUCT SELECTION ──
@@ -159,11 +265,11 @@
 
   // Stacking checkbox
   const stackEl = $('stackingToggle');
-  if (stackEl) stackEl.addEventListener('change', () => { updateSummary(); updateBar(); });
-
+  if (stackEl) stackEl.addEventListener('change', () => { updateSummary(); updateBar(); saveBasket(); });
+ 
   // Kindling quantity
   const kindQty = $('kindlingQty');
-  if (kindQty) kindQty.addEventListener('input', () => { updateSummary(); updateBar(); });
+  if (kindQty) kindQty.addEventListener('input', () => { updateSummary(); updateBar(); saveBasket(); });
 
   // ── CHECKOUT BAR ──
   function updateBar() {
@@ -176,8 +282,8 @@
       return;
     }
     let label = selected.name;
-    if (selected.id === 'k') label += ' × ' + getQty();
     if (getStack()) label += ' + stacking';
+    if (kindlingBags > 0) label += ' + kindling (x' + kindlingBags + ')';
     const total = calcTotal(false);
     summ.innerHTML = '<strong>' + label + '</strong> — £' + total.toFixed(2) + ' + delivery';
     btn.disabled = false;
@@ -185,10 +291,11 @@
 
   function calcTotal(inclDel) {
     if (!selected) return 0;
-    const wood = selected.id === 'k' ? selected.price * getQty() : selected.price;
+    const wood = selected.price;
     const stack = getStack() ? selected.stacking : 0;
+    const kindlingCost = kindlingBags * 8;
     const del = inclDel && delCharge !== null && !delBlocked ? delCharge : 0;
-    return wood + stack + del;
+    return wood + stack + kindlingCost + del;
   }
 
   // ── CHECKOUT PROGRESS BAR ──
@@ -240,7 +347,30 @@
 
   // ── ORDER SUMMARY ──
   function updateSummary() {
-    if (!selected) return;
+    if (!selected) {
+      const prodRow = $('sumProduct');
+      if (prodRow) {
+        prodRow.innerHTML = '<span>Your basket is empty</span><span>—</span>';
+      }
+      const stackRow = $('sumStacking');
+      if (stackRow) stackRow.style.display = 'none';
+      const kindRow = $('sumKindling');
+      if (kindRow) kindRow.style.display = 'none';
+      const delRow = $('sumDelivery');
+      if (delRow) {
+        const spans = delRow.querySelectorAll('span');
+        if (spans[1]) spans[1].textContent = 'Calculated at checkout';
+      }
+      const totalRow = $('sumTotal');
+      if (totalRow) {
+        const spans = totalRow.querySelectorAll('span');
+        if (spans[1]) spans[1].textContent = '—';
+      }
+      const payBtn = $('stripePayBtn');
+      if (payBtn) payBtn.disabled = true;
+      return;
+    }
+
     const wood = selected.price;
     const stack = getStack() ? selected.stacking : 0;
     const kindlingCost = kindlingBags * 8;
@@ -249,9 +379,21 @@
     // Product row
     const prodRow = $('sumProduct');
     if (prodRow) {
-      const spans = prodRow.querySelectorAll('span');
-      if (spans[0]) spans[0].textContent = selected.name;
-      if (spans[1]) spans[1].textContent = '£' + wood.toFixed(2);
+      prodRow.innerHTML = '<span>' + selected.name + ' <button class="summary-remove-btn" id="removeProduct" type="button">Remove</button></span><span>£' + wood.toFixed(2) + '</span>';
+      const removeProductBtn = $('removeProduct');
+      if (removeProductBtn) {
+        removeProductBtn.addEventListener('click', () => {
+          selected = null;
+          kindlingBags = 0;
+          localStorage.removeItem('ww_basket');
+          window.dispatchEvent(new Event('cartUpdated'));
+          if ($('dateSection')) $('dateSection').classList.remove('visible');
+          if ($('detailsSection')) $('detailsSection').classList.remove('visible');
+          document.querySelectorAll('.card[data-id]').forEach(c => c.classList.remove('selected'));
+          updateBar();
+          updateSummary();
+        });
+      }
     }
 
     // Stacking row
@@ -259,8 +401,17 @@
     if (stackRow) {
       if (getStack()) {
         stackRow.style.display = 'flex';
-        const spans = stackRow.querySelectorAll('span');
-        if (spans[1]) spans[1].textContent = '£' + stack.toFixed(2);
+        stackRow.innerHTML = '<span>Stacking — ' + selected.id + ' <button class="summary-remove-btn" id="removeStacking" type="button">Remove</button></span><span>£' + stack.toFixed(2) + '</span>';
+        const removeStackBtn = $('removeStacking');
+        if (removeStackBtn) {
+          removeStackBtn.addEventListener('click', () => {
+            const toggle = $('stackingToggle');
+            if (toggle) toggle.checked = false;
+            updateSummary();
+            updateBar();
+            saveBasket();
+          });
+        }
       } else {
         stackRow.style.display = 'none';
       }
@@ -271,7 +422,7 @@
     if (kindRow) {
       if (kindlingBags > 0) {
         kindRow.style.display = 'flex';
-        kindRow.innerHTML = '<span>Kindling × ' + kindlingBags + '</span><span>£' + kindlingCost.toFixed(2) + ' <button class="kindling-remove" id="removeKindling">Remove</button></span>';
+        kindRow.innerHTML = '<span>Kindling × ' + kindlingBags + ' <button class="summary-remove-btn" id="removeKindling" type="button">Remove</button></span><span>£' + kindlingCost.toFixed(2) + '</span>';
         const removeBtn = $('removeKindling');
         if (removeBtn) {
           removeBtn.addEventListener('click', () => {
@@ -279,6 +430,7 @@
             kindlingModalShown = false; // allow re-prompt
             updateSummary();
             updateBar();
+            saveBasket();
           });
         }
       } else {
@@ -409,6 +561,7 @@
       }
 
       updateSummary();
+      saveBasket();
     } catch (e) {
       delBlocked = false; delCharge = null;
       const el = $('delError');
@@ -475,7 +628,9 @@
         const dayOfWeek = dateObj.getDay(); // 0=Sun, 1=Mon
         const isPast = dateObj <= today;
         const isNoDelivery = (dayOfWeek === 0 || dayOfWeek === 1); // Sun or Mon
-        const isBlocked = BLOCKED_DATES.includes(dateStr);
+        const bookings = window.bookedSlots ? (window.bookedSlots[dateStr] || 0) : 0;
+        const isFullyBooked = bookings >= 4;
+        const isBlocked = BLOCKED_DATES.includes(dateStr) || isFullyBooked;
         const isSelected = dateEl.value === dateStr;
         let cls = 'cal-cell';
         if (isPast) cls += ' cal-past';
@@ -483,7 +638,18 @@
         else if (isBlocked) cls += ' cal-blocked';
         else cls += ' cal-available';
         if (isSelected) cls += ' cal-selected';
-        html += '<div class="' + cls + '" data-date="' + dateStr + '">' + d + '</div>';
+
+        let cellContent = '<span class="cal-date-num">' + d + '</span>';
+        if (!isPast && !isNoDelivery && !BLOCKED_DATES.includes(dateStr)) {
+          if (isFullyBooked) {
+            cellContent += '<span class="cal-slots cal-slots-full">Fully booked</span>';
+          } else if (bookings > 0) {
+            const left = 4 - bookings;
+            cellContent += '<span class="cal-slots cal-slots-left">' + left + ' left</span>';
+          }
+        }
+
+        html += '<div class="' + cls + '" data-date="' + dateStr + '">' + cellContent + '</div>';
       }
       html += '</div>';
       html += '<div class="cal-legend"><span class="cal-leg-item"><span class="cal-dot cal-dot-green"></span> Available</span><span class="cal-leg-item"><span class="cal-dot cal-dot-orange"></span> Fully booked</span><span class="cal-leg-item"><span class="cal-dot cal-dot-red"></span> No delivery</span></div>';
@@ -505,6 +671,7 @@
         cell.addEventListener('click', () => {
           dateEl.value = cell.dataset.date;
           renderCalendar();
+          saveBasket();
         });
       });
       calWrap.querySelectorAll('.cal-blocked').forEach(cell => {
@@ -547,11 +714,10 @@
         return;
       }
 
-      const isK = selected.id === 'k';
-      const qty = getQty();
-      const wood = isK ? selected.price * qty : selected.price;
+      const wood = selected.price;
       const stack = getStack() ? selected.stacking : 0;
-      const total = wood + stack + (delCharge || 0);
+      const kindlingCost = kindlingBags * 8;
+      const total = wood + stack + kindlingCost + (delCharge || 0);
 
       payBtn.disabled = true;
       payBtn.innerHTML = '<span class="spinner"></span>Redirecting to payment…';
@@ -561,9 +727,10 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            product: isK ? selected.name + ' × ' + qty : selected.name,
+            product: selected.name,
             productPrice: wood,
             stacking: getStack() ? stack : 0,
+            kindlingBags: kindlingBags,
             delivery: delCharge,
             deliveryMiles: delMiles,
             total: total,
@@ -580,6 +747,142 @@
         payBtn.textContent = 'Pay with Stripe';
       }
     });
+  }
+  // Save customer input to basket in real-time
+  ['custName', 'custEmail', 'custPhone', 'custAddress', 'custW3W', 'custNotes'].forEach(id => {
+    const el = $(id);
+    if (el) el.addEventListener('input', saveBasket);
+  });
+
+  // Fetch slot bookings on page load
+  async function fetchBookings() {
+    try {
+      const res = await fetch('/.netlify/functions/get-bookings');
+      if (res.ok) {
+        window.bookedSlots = await res.json();
+      }
+    } catch (e) {
+      console.error('Failed to fetch slot bookings', e);
+      window.bookedSlots = {};
+    }
+    if (typeof renderCalendar === 'function') renderCalendar();
+  }
+
+  // Fetch slot bookings and load basket on page load
+  fetchBookings();
+  loadBasket();
+
+  // Listen for storage events (updates across tabs)
+  window.addEventListener('storage', () => {
+    loadBasket();
+  });
+
+  // Open checkout modal if query parameter checkout=open is present
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('checkout') === 'open') {
+    // Wait slightly to ensure loadBasket postcode checker has started/completed
+    setTimeout(() => {
+      if (selected && modal) {
+        updateSummary();
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        updateProgress(delCharge !== null ? 3 : 2);
+      }
+    }, 400);
+  }
+
+  // Handle Stripe checkout redirects (success or cancelled)
+  if (params.get('payment') === 'success') {
+    const sessionId = params.get('session_id');
+    if (modal) {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      // Hide all standard checkout sections
+      if ($('checkoutProgress')) $('checkoutProgress').style.display = 'none';
+      if ($('orderSummary')) $('orderSummary').style.display = 'none';
+      if ($('postcodeSection')) $('postcodeSection').style.display = 'none';
+      if ($('dateSection')) $('dateSection').style.display = 'none';
+      if ($('detailsSection')) $('detailsSection').style.display = 'none';
+
+      const successBox = $('successBox');
+      if (successBox) {
+        successBox.style.display = 'block';
+
+        if (sessionId) {
+          successBox.innerHTML = `
+            <div class="spinner-large" style="margin: 2rem auto; border: 4px solid var(--c4); border-top: 4px solid var(--c6); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
+            <h3>Confirming your order...</h3>
+            <p>Please wait while we verify your payment and reserve your delivery slot.</p>
+            <style>
+              @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            </style>
+          `;
+
+          fetch('/.netlify/functions/confirm-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_id: sessionId })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              // Clear basket
+              localStorage.removeItem('ww_basket');
+              window.dispatchEvent(new Event('cartUpdated'));
+
+              successBox.innerHTML = `
+                <svg style="width:60px; height:60px; stroke:#4caf50; fill:none; stroke-width:2; margin-bottom:1.5rem;" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <h3>Order confirmed!</h3>
+                <p>Thank you for your order. We've sent a confirmation to your email address. We'll be in touch to confirm your delivery slot.</p>
+                ${data.notificationFailed ? `
+                  <div class="warning-box" style="background:#fff3cd; border:1px solid #ffeeba; color:#856404; padding:1rem; border-radius:8px; font-size:0.85rem; margin-top:1.5rem; text-align:left; line-height:1.5;">
+                    <strong>Notice:</strong> We successfully received your payment, but we had trouble sending the automated email/SMS confirmation to Ed. Don't worry, your order is secured! Feel free to contact Ed directly on 07583 338879 if you have any questions.
+                  </div>
+                ` : ''}
+                <a href="/" class="btn-primary" style="margin-top:1.5rem; display:inline-block;">Back to home</a>
+              `;
+            } else {
+              successBox.innerHTML = `
+                <svg style="width:60px; height:60px; stroke:#f44336; fill:none; stroke-width:2; margin-bottom:1.5rem;" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <h3>Verification failed</h3>
+                <p>We couldn't verify this payment session. If you paid and believe this is an error, please contact Ed on 07583 338879.</p>
+                <a href="/firewood.html" class="btn-primary" style="margin-top:1.5rem; display:inline-block;">Return to Shop</a>
+              `;
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            successBox.innerHTML = `
+              <svg style="width:60px; height:60px; stroke:#ff9800; fill:none; stroke-width:2; margin-bottom:1.5rem;" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <h3>Connection error</h3>
+              <p>There was a connection issue verifying your order. Please don't worry — if your payment went through, your order has been received. Please call Ed on 07583 338879 to confirm.</p>
+              <a href="/" class="btn-primary" style="margin-top:1.5rem; display:inline-block;">Back to home</a>
+            `;
+          });
+        } else {
+          localStorage.removeItem('ww_basket');
+          window.dispatchEvent(new Event('cartUpdated'));
+        }
+      }
+    }
+  } else if (params.get('payment') === 'cancelled') {
+    alert('Payment was cancelled. Your items are still in your basket.');
+    if (modal && selected) {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      updateProgress(delCharge !== null ? 3 : 2);
+    }
   }
 
 })();
