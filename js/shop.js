@@ -25,6 +25,7 @@
   const FREE_MILES = 8;
   const PPM = 2.00;
   const MAX_MILES = 20;
+  const KINDLING_IN_STOCK = (typeof window !== 'undefined' && window.SITE_CONFIG && window.SITE_CONFIG.kindlingInStock !== undefined) ? window.SITE_CONFIG.kindlingInStock : false;
 
   // ── STATE ──
   let selected = null;
@@ -84,6 +85,7 @@
           stacking: basket.selectedProduct.stacking
         };
         kindlingBags = basket.kindlingBags || 0;
+        if (!KINDLING_IN_STOCK) kindlingBags = 0;
         
         document.querySelectorAll('.card[data-id]').forEach(card => {
           if (card.dataset.id === selected.id) {
@@ -250,11 +252,12 @@
       };
 
       // Show kindling modal
-      if (kindlingModal && !kindlingModalShown) {
+      if (KINDLING_IN_STOCK && kindlingModal && !kindlingModalShown) {
         kindlingModalShown = true;
         kindlingCountEl.textContent = '1';
         kindlingModal.classList.add('visible');
       } else {
+        kindlingBags = 0;
         completeSelection();
       }
     };

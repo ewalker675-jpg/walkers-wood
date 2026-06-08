@@ -20,6 +20,7 @@ const SITE_CONFIG = {
 
   // ── KINDLING ──
   kindlingPrice: 8, // per bag, inc VAT
+  kindlingInStock: false, // Set to true when kindling is back in stock
 
   // ── DELIVERY ──
   delivery: {
