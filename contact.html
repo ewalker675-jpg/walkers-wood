@@ -14,6 +14,61 @@
   <script src="/js/main.js" defer></script>
   <script src="/js/contact.js" defer></script>
   <link rel="icon" href="/favicon.png" type="image/png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://walkerswood.co.uk",
+        "name": "Walkers Wood Firewood & Forestry",
+        "url": "https://www.walkerswood.co.uk",
+        "image": "https://walkerswood.co.uk",
+        "priceRange": "££",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Clifton upon Teme",
+          "addressRegion": "Worcestershire",
+          "addressCountry": "GB"
+        },
+        "areaServed": [
+          {
+            "@type": "AdministrativeArea",
+            "name": "Worcester"
+          },
+          {
+            "@type": "AdministrativeArea",
+            "name": "Worcestershire"
+          },
+          {
+            "@type": "AdministrativeArea",
+            "name": "Martley"
+          }
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Firewood Services",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Seasoned Hardwood Firewood Delivery"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Professional Forestry and Woodland Management"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -160,13 +215,13 @@
         <div class="da-text fade">
           <span class="label label--light">Delivery coverage</span>
           <h2>Do we deliver <span>to you?</span></h2>
-          <p>We're based in Clifton upon Teme, WR6 6DT. Free delivery within 8 miles, and we deliver up to 20 miles across Worcestershire and Herefordshire.</p>
+          <p>We're based in Clifton upon Teme, WR6 6DT. Free delivery within 10 miles, and we deliver up to 20 miles across Worcestershire and Herefordshire.</p>
           <p>Check your exact delivery cost using the <a href="/firewood.html">postcode checker on our shop page</a>. Beyond 20 miles, please get in touch before ordering.</p>
           <a href="/firewood.html" class="btn-sm">Check your postcode &rarr;</a>
         </div>
         <div class="zones fade">
-          <div class="zone"><div class="zdot f"></div><div><strong>Within 8 miles of WR6 6DT</strong><p>Free delivery — no charge</p></div></div>
-          <div class="zone"><div class="zdot p"></div><div><strong>8–20 miles from WR6 6DT</strong><p>£2 per mile beyond the free zone</p></div></div>
+          <div class="zone"><div class="zdot f"></div><div><strong>Within 10 miles of WR6 6DT</strong><p>Free delivery — no charge</p></div></div>
+          <div class="zone"><div class="zdot p"></div><div><strong>10–20 miles from WR6 6DT</strong><p>£2 per mile beyond the free zone</p></div></div>
           <div class="zone"><div class="zdot o"></div><div><strong>Beyond 20 miles</strong><p>Please contact Ed before ordering</p></div></div>
         </div>
       </div>

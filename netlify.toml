@@ -56,6 +56,22 @@
   to = "/terms-of-use.html"
   status = 200
 
+# Local SEO landing page redirects
+[[redirects]]
+  from = "/firewood-delivery-worcester"
+  to = "/firewood-delivery-worcester.html"
+  status = 200
+
+[[redirects]]
+  from = "/seasoned-hardwood-logs"
+  to = "/seasoned-hardwood-logs.html"
+  status = 200
+
+[[redirects]]
+  from = "/wholesale-commercial-logs"
+  to = "/wholesale-commercial-logs.html"
+  status = 200
+
 # Old Wix URL redirects
 [[redirects]]
   from = "/firewood-1"

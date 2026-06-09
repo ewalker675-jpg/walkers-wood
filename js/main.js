@@ -141,12 +141,14 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p class="footer-copy">© ${year} Walkers Wood. All rights reserved.</p>
+        <p class="footer-copy">© ${year} Walkers Wood. Premium Firewood &amp; Quality Forestry Services | Based in Clifton upon Teme, Worcestershire.</p>
         <div class="footer-legal">
           <a href="/privacy-policy.html">Privacy Policy</a>
           <a href="/cookie-policy.html">Cookie Policy</a>
-          <a href="/terms-and-conditions.html">Terms & Conditions</a>
+          <a href="/terms-and-conditions.html">Terms &amp; Conditions</a>
           <a href="/terms-of-use.html">Terms of Use</a>
+          <a href="/sitemap.xml">Sitemap</a>
+          <span style="color:var(--c4); font-size:0.75rem; margin-left:0.5rem; display:inline-block;">Delivery: Free within 10 miles of WR6 6DT, £2/mile thereafter up to 20 miles.</span>
         </div>
       </div>
     </div>

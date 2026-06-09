@@ -24,7 +24,7 @@ const SITE_CONFIG = {
 
   // ── DELIVERY ──
   delivery: {
-    freeWithinMiles: 8,
+    freeWithinMiles: 10,
     pricePerMile: 2.00,
     maxMiles: 20,
     basePostcode: 'WR66DT',

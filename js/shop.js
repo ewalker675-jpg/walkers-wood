@@ -22,7 +22,7 @@
 
   // ── CONSTANTS ──
   const BASE_POSTCODE = 'WR66DT';
-  const FREE_MILES = 8;
+  const FREE_MILES = 10;
   const PPM = 2.00;
   const MAX_MILES = 20;
   const KINDLING_IN_STOCK = (typeof window !== 'undefined' && window.SITE_CONFIG && window.SITE_CONFIG.kindlingInStock !== undefined) ? window.SITE_CONFIG.kindlingInStock : false;
@@ -555,7 +555,7 @@
           el.style.display = 'block';
         }
         if (msgEl) {
-          msgEl.textContent = 'Free delivery within 8 miles of WR6 6DT. Beyond that, £2/mile up to 20 miles.';
+          msgEl.textContent = 'Free delivery within 10 miles of WR6 6DT. Beyond that, £2/mile up to 20 miles.';
           msgEl.style.display = 'block';
         }
         if (dateSection) dateSection.classList.add('visible');
