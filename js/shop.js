@@ -139,7 +139,7 @@
     const id = card.dataset.id;
     if (id === 'k') return; // skip kindling
     const vol = parseInt(id) || 0;
-    if (vol < 1) return;
+    if (isNaN(vol) || vol < 1 || id === 'party') return;
     const imgWrap = card.querySelector('.card-img');
     if (!imgWrap) return;
 
@@ -404,7 +404,8 @@
     if (stackRow) {
       if (getStack()) {
         stackRow.style.display = 'flex';
-        stackRow.innerHTML = '<span>Stacking — ' + selected.id + ' <button class="summary-remove-btn" id="removeStacking" type="button">Remove</button></span><span>£' + stack.toFixed(2) + '</span>';
+        const displayVol = selected.id === 'party' ? '1m³' : selected.id + 'm³';
+        stackRow.innerHTML = '<span>Stacking — ' + displayVol + ' <button class="summary-remove-btn" id="removeStacking" type="button">Remove</button></span><span>£' + stack.toFixed(2) + '</span>';
         const removeStackBtn = $('removeStacking');
         if (removeStackBtn) {
           removeStackBtn.addEventListener('click', () => {
